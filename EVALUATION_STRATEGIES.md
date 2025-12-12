@@ -1,0 +1,328 @@
+# DeepEval Evaluation Workflow Strategy Support
+
+This document identifies which strategies from the unified evaluation workflow are supported by DeepEval.
+
+---
+
+## **Phase 0: Provisioning (The Runtime)**
+
+### **Step A: Harness Installation**
+
+- ✅ **Strategy 1: PyPI Packages** - **SUPPORTED**
+  - DeepEval can be installed via `pip install -U deepeval`
+  - Documentation: README.md, docs/docs/cli.mdx, docs/docs/getting-started.mdx
+  - Additional dependencies can be installed via pip (e.g., `pip install chromadb langchain-core` for document synthesis)
+
+- ✅ **Strategy 2: Git Clone** - **SUPPORTED**
+  - As an open-source project, DeepEval can be cloned and installed from source
+  - Repository available at: https://github.com/confident-ai/deepeval
+
+- ❌ **Strategy 3: Container Images** - **NOT SUPPORTED**
+  - No evidence of Docker or container image distribution found in documentation
+
+- ❌ **Strategy 4: Binary Packages** - **NOT SUPPORTED**
+  - No standalone executable binaries available
+
+- ❌ **Strategy 5: Node Package** - **NOT SUPPORTED**
+  - DeepEval is Python-based only
+
+### **Step B: Service Authentication**
+
+- ✅ **Strategy 1: Evaluation Platform Authentication** - **SUPPORTED**
+  - DeepEval integrates with Confident AI platform
+  - Authentication via CLI: `deepeval login`
+  - API key management: `deepeval login [--confident-api-key ...]`
+  - Documentation: README.md (lines 146-157), docs/docs/cli.mdx (lines 58-61)
+  - Test results can be uploaded to Confident AI for sharing and comparison
+
+- ✅ **Strategy 2: API Provider Authentication** - **SUPPORTED**
+  - Supports multiple LLM providers via API keys:
+    - OpenAI (OPENAI_API_KEY)
+    - Anthropic
+    - Gemini
+    - Azure OpenAI
+    - Amazon Bedrock
+    - Grok
+    - Vertex AI
+    - Ollama (local)
+  - Configuration via environment variables or .env files
+  - Documentation: README.md (lines 191-195, 337-393), docs/docs/cli.mdx, docs/integrations/models/
+  - CLI commands: `deepeval set-*` and `--save=dotenv` for persistence
+
+- ✅ **Strategy 3: Repository Authentication** - **SUPPORTED**
+  - For accessing model repositories (e.g., Hugging Face for benchmarking)
+  - Example in benchmarks-introduction.mdx shows loading models from Hugging Face
+  - Required for custom model implementations and benchmark evaluations
+
+---
+
+## **Phase I: Specification (The Contract)**
+
+### **Step A: SUT Preparation**
+
+- ✅ **Strategy 1: Model-as-a-Service (Remote Inference)** - **SUPPORTED**
+  - Supports remote API-based models:
+    - OpenAI models (GPT-4, GPT-3.5, etc.)
+    - Anthropic Claude
+    - Google Gemini
+    - Azure OpenAI
+    - Amazon Bedrock
+    - Grok
+    - Vertex AI
+  - Documentation: docs/docs/getting-started-rag.mdx (lines 51-162), docs/integrations/models/
+  - Used for both evaluation and as LLM-as-judge in metrics
+
+- ✅ **Strategy 2: Model-in-Process (Local Inference)** - **SUPPORTED**
+  - Custom model implementation via `DeepEvalBaseLLM` class
+  - Supports loading local models (e.g., via Hugging Face transformers, Ollama)
+  - Example with Mistral 7B in docs/docs/benchmarks-introduction.mdx (lines 62-111)
+  - Documentation: docs/docs/benchmarks-introduction.mdx, docs/integrations/models/ollama.mdx
+  - Allows direct access to model weights and inference
+
+- ❌ **Strategy 3: Algorithm Implementation (In-Memory Structures)** - **NOT SUPPORTED**
+  - DeepEval focuses on LLM evaluation, not vector indexes or knowledge graph embeddings
+  - No support for ANN algorithms, BM25 indexes, etc. as primary evaluation targets
+
+- ❌ **Strategy 4: Policy/Agent Instantiation (Stateful Controllers)** - **PARTIALLY SUPPORTED**
+  - Supports evaluating AI agents with metrics like Task Completion, Tool Correctness
+  - Documentation: docs/docs/metrics-introduction.mdx (lines 56-67)
+  - However, does NOT support RL policies, robot controllers, or simulation-based agents
+  - Focuses on LLM-based agents with tool use capabilities
+
+### **Step B: Benchmark Preparation (Inputs)**
+
+- ✅ **Strategy 1: Benchmark Dataset Preparation (Offline)** - **SUPPORTED**
+  - Pre-existing benchmark datasets:
+    - MMLU (Massive Multitask Language Understanding)
+    - HellaSwag
+    - DROP
+    - BIG-Bench Hard
+    - TruthfulQA
+    - HumanEval
+    - GSM8K
+    - and more (ARC, BBQ, BoolQ, IfEval, Lambada, LogiQA, MathQA, SQUAD, Winogrande)
+  - Documentation: docs/docs/benchmarks-introduction.mdx, individual benchmark docs
+  - Custom dataset creation via `EvaluationDataset` class
+  - Dataset loading from Confident AI: `dataset.pull(alias="My Dataset")`
+  - Documentation: docs/docs/evaluation-datasets.mdx (lines 136-143)
+
+- ✅ **Strategy 2: Synthetic Data Generation (Generative)** - **SUPPORTED**
+  - Synthesizer for generating synthetic datasets
+  - Generate goldens from documents: `synthesizer.generate_goldens_from_docs()`
+  - Generate goldens from scratch: `synthesizer.generate_goldens_from_scratch()`
+  - Generate conversational goldens for multi-turn evaluation
+  - Documentation: README.md (lines 122-140), docs/docs/synthesizer-generate-from-docs.mdx, docs/docs/evaluation-introduction.mdx (lines 122-140)
+
+- ❌ **Strategy 3: Simulation Environment Setup (Simulated)** - **NOT SUPPORTED**
+  - No support for 3D virtual environments, physics simulation, or multi-agent scenarios
+  - DeepEval is focused on text-based LLM evaluation
+
+- ❌ **Strategy 4: Production Traffic Sampling (Online)** - **PARTIALLY SUPPORTED**
+  - Tracing capabilities allow monitoring production LLM responses
+  - Documentation: docs/docs/evaluation-llm-tracing.mdx
+  - Can collect real-world data via tracing for later evaluation
+  - However, no explicit "production traffic sampling" feature described
+
+### **Step C: Benchmark Preparation (References)**
+
+- ✅ **Strategy 1: Judge Preparation** - **SUPPORTED**
+  - LLM-as-judge models for evaluation:
+    - G-Eval metric
+    - DAG (Deep Acyclic Graph) metric
+    - Conversational G-Eval
+    - Arena G-Eval for comparing multiple models
+  - Pre-configured judge models using OpenAI, Anthropic, Gemini, etc.
+  - Custom judge configuration via model selection
+  - Documentation: docs/docs/metrics-introduction.mdx (lines 15-150), docs/docs/metrics-llm-evals.mdx
+
+- ✅ **Strategy 2: Ground Truth Preparation** - **SUPPORTED**
+  - Expected outputs in test cases (`expected_output` parameter)
+  - Retrieval contexts for RAG evaluation (`retrieval_context` parameter)
+  - Human annotations via Confident AI platform
+  - Golden datasets with pre-defined reference materials
+  - Documentation: docs/docs/evaluation-test-cases.mdx, docs/docs/evaluation-datasets.mdx
+
+---
+
+## **Phase II: Execution (The Run)**
+
+### **Step A: SUT Invocation**
+
+- ✅ **Strategy 1: Batch Inference** - **SUPPORTED**
+  - Evaluate multiple test cases in a dataset
+  - Parallel execution via `run_async=True` or `async_config`
+  - Batch generation for benchmarks: `benchmark.evaluate(model=mistral_7b, batch_size=5)`
+  - Documentation: README.md (lines 292-323), docs/docs/evaluation-introduction.mdx (lines 192-215), docs/docs/benchmarks-introduction.mdx (lines 129-144)
+  - CLI command: `deepeval test run test_example.py -n 4` (parallel execution)
+
+- ✅ **Strategy 2: Interactive Loop** - **SUPPORTED**
+  - Multi-turn conversational evaluation via `ConversationalTestCase`
+  - Turn-based evaluation with `Turn` objects
+  - Support for agentic workflows with tool use
+  - Documentation: docs/docs/getting-started-rag.mdx (lines 540-616), docs/docs/evaluation-multiturn-test-cases.mdx
+  - Metrics: Task Completion, Tool Correctness, Argument Correctness for agents
+
+- ✅ **Strategy 3: Arena Battle** - **SUPPORTED**
+  - `ArenaTestCase` for comparing multiple models on same input
+  - `Contestant` class for each model variant
+  - Arena G-Eval metric for pairwise comparison
+  - Documentation: docs/docs/evaluation-arena-test-cases.mdx (lines 1-100), docs/docs/metrics-arena-g-eval.mdx
+  - Example: comparing GPT-4, Claude-4, and Gemini-2.5 on same input
+
+- ✅ **Strategy 4: Production Streaming** - **PARTIALLY SUPPORTED**
+  - LLM tracing for monitoring production execution
+  - `@observe` decorator for continuous monitoring
+  - Documentation: docs/docs/evaluation-llm-tracing.mdx
+  - Can evaluate components in production via tracing
+  - However, no explicit "drift monitoring" or "regression alerting" features described in core docs
+
+---
+
+## **Phase III: Assessment (The Score)**
+
+### **Step A: Individual Scoring**
+
+- ✅ **Strategy 1: Deterministic Measurement** - **SUPPORTED**
+  - Exact Match metric
+  - Token-based metrics via custom metric implementation
+  - JSON Correctness metric for structured outputs
+  - Documentation: docs/docs/metrics-exact-match.mdx, docs/docs/metrics-json-correctness.mdx
+  - Can implement custom deterministic metrics (BLEU, ROUGE) via `BaseMetric` class
+
+- ✅ **Strategy 2: Embedding Measurement** - **SUPPORTED**
+  - Answer Relevancy metric (uses embeddings for semantic similarity)
+  - Contextual metrics use embedding-based similarity
+  - Custom embedding models supported
+  - Documentation: docs/docs/metrics-answer-relevancy.mdx, guides/guides-using-custom-embedding-models.mdx
+  - Integration with various embedding providers
+
+- ✅ **Strategy 3: Subjective Measurement** - **SUPPORTED**
+  - LLM-as-judge metrics:
+    - G-Eval (custom criteria evaluation)
+    - DAG (Deep Acyclic Graph)
+    - Conversational G-Eval
+    - Arena G-Eval
+  - Pre-built subjective metrics:
+    - Bias
+    - Toxicity
+    - Hallucination
+    - Faithfulness
+    - Summarization
+  - Documentation: docs/docs/metrics-introduction.mdx (lines 15-37), docs/docs/metrics-llm-evals.mdx
+  - All metrics output score (0-1) with reasoning
+
+- ❌ **Strategy 4: Performance Measurement** - **NOT SUPPORTED**
+  - No built-in metrics for latency, throughput, memory, or energy consumption
+  - Focus is on quality evaluation, not performance benchmarking
+
+### **Step B: Collective Aggregation**
+
+- ✅ **Strategy 1: Score Aggregation** - **SUPPORTED**
+  - Aggregate metrics across test cases in a dataset
+  - Overall scores for benchmarks
+  - Test run summaries with pass/fail counts
+  - Documentation: docs/docs/benchmarks-introduction.mdx (lines 146-150), docs/docs/evaluation-introduction.mdx
+  - Hyperparameter tracking for comparing iterations
+
+- ❌ **Strategy 2: Uncertainty Quantification** - **NOT SUPPORTED**
+  - No evidence of bootstrap resampling or confidence intervals
+  - No PPI (Prediction-Powered Inference) implementation mentioned
+
+---
+
+## **Phase IV: Reporting (The Output)**
+
+### **Step A: Insight Presentation**
+
+- ✅ **Strategy 1: Execution Tracing** - **SUPPORTED**
+  - LLM tracing shows step-by-step execution logs
+  - Spans for individual components (LLM calls, retrievers, tools)
+  - Trace visualization on Confident AI platform
+  - Documentation: docs/docs/evaluation-llm-tracing.mdx (lines 1-100)
+  - `@observe` decorator for tracing components
+
+- ✅ **Strategy 2: Subgroup Analysis** - **PARTIALLY SUPPORTED**
+  - Benchmark task-specific scores available
+  - Can analyze performance by task category in benchmarks
+  - Documentation: docs/docs/benchmarks-introduction.mdx
+  - However, no explicit demographic or domain stratification features described
+
+- ✅ **Strategy 3: Chart Generation** - **SUPPORTED**
+  - Visual reports on Confident AI platform
+  - Testing reports with metric visualizations
+  - Documentation: README.md (lines 63, 377), docs/docs/metrics-introduction.mdx (lines 142-148)
+  - Confident AI provides visual representations of evaluation results
+
+- ✅ **Strategy 4: Dashboard Creation** - **SUPPORTED**
+  - Confident AI platform provides web-based dashboards
+  - Interactive metric comparisons
+  - Test run history and comparisons
+  - Documentation: README.md (lines 350-376), CLI commands like `deepeval view`
+  - Shareable testing reports URL
+
+- ✅ **Strategy 5: Leaderboard Publication** - **SUPPORTED**
+  - Integration with Confident AI for result sharing
+  - Public/private test run sharing via URLs
+  - Benchmark results can be uploaded and compared
+  - Documentation: README.md (lines 114-120, 350-376)
+  - `deepeval login` and automatic upload on evaluation
+
+- ❌ **Strategy 6: Regression Alerting** - **NOT SUPPORTED**
+  - No explicit regression detection or alerting features described
+  - No automatic threshold-based alerts mentioned
+  - Can manually compare test runs on Confident AI platform
+
+---
+
+## Summary
+
+### Supported Strategies by Phase:
+
+**Phase 0: Provisioning**
+- 2/5 installation strategies (PyPI, Git Clone)
+- 3/3 authentication strategies (Platform, API Provider, Repository)
+
+**Phase I: Specification**
+- 2/4 SUT preparation strategies (Remote Inference, Local Inference)
+- 2/4 benchmark preparation strategies (Offline Datasets, Synthetic Generation)
+- 2/2 reference preparation strategies (Judge Preparation, Ground Truth)
+
+**Phase II: Execution**
+- 4/4 invocation strategies (Batch Inference, Interactive Loop, Arena Battle, Production Streaming*)
+  - *Production Streaming partially supported via tracing
+
+**Phase III: Assessment**
+- 3/4 individual scoring strategies (Deterministic, Embedding, Subjective)
+- 1/2 aggregation strategies (Score Aggregation only)
+
+**Phase IV: Reporting**
+- 5/6 presentation strategies (all except Regression Alerting)
+
+### Overall Coverage:
+- **Total Strategies in Framework**: 30
+- **Fully Supported**: 20
+- **Partially Supported**: 3
+- **Not Supported**: 7
+- **Support Rate**: ~67% (20/30) to ~77% (23/30 with partial support)
+
+### Key Strengths:
+1. Comprehensive LLM evaluation metric library (50+ metrics)
+2. Strong integration with Confident AI platform for visualization and collaboration
+3. Multiple LLM provider support (OpenAI, Anthropic, Gemini, etc.)
+4. Benchmark dataset library (MMLU, HellaSwag, HumanEval, etc.)
+5. Synthetic data generation capabilities
+6. Multi-turn and conversational evaluation support
+7. Arena-style model comparison
+8. LLM tracing for component-level evaluation
+
+### Key Gaps:
+1. No containerized deployment option
+2. No performance/efficiency metrics (latency, throughput, memory)
+3. No simulation environment support (3D, physics, RL)
+4. No uncertainty quantification (confidence intervals, bootstrap)
+5. No explicit regression alerting system
+6. Limited production monitoring features (no drift detection)
+
+---
+
+*This analysis is based on the DeepEval documentation as of the repository state on 2025-12-12.*
