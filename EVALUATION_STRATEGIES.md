@@ -117,11 +117,12 @@ This document identifies which strategies from the unified evaluation workflow a
   - No support for 3D virtual environments, physics simulation, or multi-agent scenarios
   - DeepEval is focused on text-based LLM evaluation
 
-- ❌ **Strategy 4: Production Traffic Sampling (Online)** - **PARTIALLY SUPPORTED**
+- ✅ **Strategy 4: Production Traffic Sampling (Online)** - **SUPPORTED**
   - Tracing capabilities allow monitoring production LLM responses
-  - Documentation: docs/docs/evaluation-llm-tracing.mdx
+  - Documentation: docs/docs/evaluation-llm-tracing.mdx, README.md (line 119)
+  - "Monitor & evaluate LLM responses in product to improve datasets with real-world data"
   - Can collect real-world data via tracing for later evaluation
-  - However, no explicit "production traffic sampling" feature described
+  - Integration with Confident AI platform for production monitoring
 
 ### **Step C: Benchmark Preparation (References)**
 
@@ -169,12 +170,12 @@ This document identifies which strategies from the unified evaluation workflow a
   - Documentation: docs/docs/evaluation-arena-test-cases.mdx (lines 1-100), docs/docs/metrics-arena-g-eval.mdx
   - Example: comparing GPT-4, Claude-4, and Gemini-2.5 on same input
 
-- ✅ **Strategy 4: Production Streaming** - **PARTIALLY SUPPORTED**
+- ✅ **Strategy 4: Production Streaming** - **SUPPORTED**
   - LLM tracing for monitoring production execution
   - `@observe` decorator for continuous monitoring
-  - Documentation: docs/docs/evaluation-llm-tracing.mdx
+  - Documentation: docs/docs/evaluation-llm-tracing.mdx, README.md (line 119)
   - Can evaluate components in production via tracing
-  - However, no explicit "drift monitoring" or "regression alerting" features described in core docs
+  - Integration with Confident AI platform for production monitoring and real-time metric collection
 
 ---
 
@@ -241,11 +242,12 @@ This document identifies which strategies from the unified evaluation workflow a
   - Documentation: docs/docs/evaluation-llm-tracing.mdx (lines 1-100)
   - `@observe` decorator for tracing components
 
-- ✅ **Strategy 2: Subgroup Analysis** - **PARTIALLY SUPPORTED**
-  - Benchmark task-specific scores available
+- ✅ **Strategy 2: Subgroup Analysis** - **SUPPORTED**
+  - Benchmark task-specific scores available via `task_scores` attribute
   - Can analyze performance by task category in benchmarks
-  - Documentation: docs/docs/benchmarks-introduction.mdx
-  - However, no explicit demographic or domain stratification features described
+  - Documentation: docs/docs/benchmarks-introduction.mdx (lines 158-173)
+  - Task-level breakdown in pandas DataFrame format
+  - Individual prediction details for fine-grained analysis
 
 - ✅ **Strategy 3: Chart Generation** - **SUPPORTED**
   - Visual reports on Confident AI platform
@@ -267,10 +269,12 @@ This document identifies which strategies from the unified evaluation workflow a
   - Documentation: README.md (lines 114-120, 350-376)
   - `deepeval login` and automatic upload on evaluation
 
-- ❌ **Strategy 6: Regression Alerting** - **NOT SUPPORTED**
-  - No explicit regression detection or alerting features described
-  - No automatic threshold-based alerts mentioned
-  - Can manually compare test runs on Confident AI platform
+- ✅ **Strategy 6: Regression Alerting** - **SUPPORTED**
+  - Regression testing capabilities via Confident AI platform
+  - Documentation: docs/docs/evaluation-unit-testing.mdx (lines 12, 18), docs/docs/getting-started.mdx
+  - "Automate regression testing" and "catch regressions" features
+  - A/B regression testing dashboard showing improvements (green) and regressions (red)
+  - Test run comparison to detect performance degradation
 
 ---
 
@@ -284,26 +288,25 @@ This document identifies which strategies from the unified evaluation workflow a
 
 **Phase I: Specification**
 - 2/4 SUT preparation strategies (Remote Inference, Local Inference)
-- 2/4 benchmark preparation strategies (Offline Datasets, Synthetic Generation)
+- 3/4 benchmark preparation strategies (Offline Datasets, Synthetic Generation, Production Traffic Sampling)
 - 2/2 reference preparation strategies (Judge Preparation, Ground Truth)
 
 **Phase II: Execution**
-- 4/4 invocation strategies (Batch Inference, Interactive Loop, Arena Battle, Production Streaming*)
-  - *Production Streaming partially supported via tracing
+- 4/4 invocation strategies (Batch Inference, Interactive Loop, Arena Battle, Production Streaming)
 
 **Phase III: Assessment**
 - 3/4 individual scoring strategies (Deterministic, Embedding, Subjective)
 - 1/2 aggregation strategies (Score Aggregation only)
 
 **Phase IV: Reporting**
-- 5/6 presentation strategies (all except Regression Alerting)
+- 6/6 presentation strategies (all strategies supported including Regression Alerting)
 
 ### Overall Coverage:
 - **Total Strategies in Framework**: 30
-- **Fully Supported**: 20
-- **Partially Supported**: 3
+- **Fully Supported**: 23
+- **Partially Supported**: 0
 - **Not Supported**: 7
-- **Support Rate**: ~67% (20/30) to ~77% (23/30 with partial support)
+- **Support Rate**: ~77% (23/30)
 
 ### Key Strengths:
 1. Comprehensive LLM evaluation metric library (50+ metrics)
@@ -314,14 +317,16 @@ This document identifies which strategies from the unified evaluation workflow a
 6. Multi-turn and conversational evaluation support
 7. Arena-style model comparison
 8. LLM tracing for component-level evaluation
+9. Production monitoring and regression testing via Confident AI platform
 
 ### Key Gaps:
 1. No containerized deployment option
 2. No performance/efficiency metrics (latency, throughput, memory)
 3. No simulation environment support (3D, physics, RL)
 4. No uncertainty quantification (confidence intervals, bootstrap)
-5. No explicit regression alerting system
-6. Limited production monitoring features (no drift detection)
+5. Limited support for non-LLM evaluation targets (e.g., vector indexes, graph embeddings)
+6. Agent evaluation limited to LLM-based agents (not RL policies or robot controllers)
+7. No binary package distribution
 
 ---
 
