@@ -108,11 +108,13 @@ This document identifies which strategies from the unified evaluation workflow a
   - Documentation: docs/docs/evaluation-datasets.mdx (lines 136-143)
 
 - ✅ **Strategy 2: Synthetic Data Generation (Generative)** - **SUPPORTED**
-  - Synthesizer for generating synthetic datasets
+  - Synthesizer for generating synthetic test inputs and reference outputs
+  - Generates `input` (test queries/scenarios) and optionally `expected_output` (reference labels)
+  - Does NOT generate `actual_output` (which comes from the system under test)
   - Generate goldens from documents: `synthesizer.generate_goldens_from_docs()`
   - Generate goldens from scratch: `synthesizer.generate_goldens_from_scratch()`
-  - Generate conversational goldens for multi-turn evaluation
-  - Documentation: README.md (lines 122-140), docs/docs/synthesizer-generate-from-docs.mdx, docs/docs/evaluation-introduction.mdx (lines 122-140)
+  - Generate conversational goldens (scenario + expected_outcome) for multi-turn evaluation
+  - Documentation: README.md (lines 122-140), docs/docs/synthesizer-introduction.mdx, docs/docs/synthesizer-generate-from-docs.mdx (lines 78, 98)
 
 - ❌ **Strategy 3: Simulation Environment Setup (Simulated)** - **NOT SUPPORTED**
   - No support for 3D virtual environments, physics simulation, or multi-agent scenarios
