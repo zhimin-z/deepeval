@@ -83,11 +83,12 @@ This document identifies which strategies from the unified evaluation workflow a
   - DeepEval focuses on LLM evaluation, not vector indexes or knowledge graph embeddings
   - No support for ANN algorithms, BM25 indexes, etc. as primary evaluation targets
 
-- ❌ **Strategy 4: Policy/Agent Instantiation (Stateful Controllers)** - **PARTIALLY SUPPORTED**
-  - Supports evaluating AI agents with metrics like Task Completion, Tool Correctness
+- ⚠️ **Strategy 4: Policy/Agent Instantiation (Stateful Controllers)** - **PARTIALLY SUPPORTED**
+  - Supports evaluating LLM-based AI agents with metrics like Task Completion, Tool Correctness
   - Documentation: docs/docs/metrics-introduction.mdx (lines 56-67)
-  - However, does NOT support RL policies, robot controllers, or simulation-based agents
-  - Focuses on LLM-based agents with tool use capabilities
+  - Agentic metrics: Task Completion, Argument Correctness, Tool Correctness, Step Efficiency, Plan Adherence, Plan Quality
+  - Does NOT support RL policies, robot controllers, or simulation-based agents
+  - Focus is on LLM-based agents with tool use and reasoning capabilities
 
 ### **Step B: Benchmark Preparation (Inputs)**
 
@@ -287,7 +288,7 @@ This document identifies which strategies from the unified evaluation workflow a
 - 3/3 authentication strategies (Platform, API Provider, Repository)
 
 **Phase I: Specification**
-- 2/4 SUT preparation strategies (Remote Inference, Local Inference)
+- 3/4 SUT preparation strategies (Remote Inference, Local Inference, LLM-based Agents - partially)
 - 3/4 benchmark preparation strategies (Offline Datasets, Synthetic Generation, Production Traffic Sampling)
 - 2/2 reference preparation strategies (Judge Preparation, Ground Truth)
 
@@ -302,11 +303,11 @@ This document identifies which strategies from the unified evaluation workflow a
 - 6/6 presentation strategies (all strategies supported including Regression Alerting)
 
 ### Overall Coverage:
-- **Total Strategies in Framework**: 30
+- **Total Strategies in Framework**: 34
 - **Fully Supported**: 23
-- **Partially Supported**: 0
-- **Not Supported**: 7
-- **Support Rate**: ~77% (23/30)
+- **Partially Supported**: 1 (LLM-based agents)
+- **Not Supported**: 10
+- **Support Rate**: ~68% (23/34) or ~71% (24/34 including partial support)
 
 ### Key Strengths:
 1. Comprehensive LLM evaluation metric library (50+ metrics)
