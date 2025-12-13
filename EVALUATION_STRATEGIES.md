@@ -29,11 +29,15 @@ This document identifies which strategies from the unified evaluation workflow a
 ### **Step B: Service Authentication**
 
 - ✅ **Strategy 1: Evaluation Platform Authentication** - **SUPPORTED**
-  - DeepEval integrates with Confident AI platform
-  - Authentication via CLI: `deepeval login`
-  - API key management: `deepeval login [--confident-api-key ...]`
-  - Documentation: README.md (lines 146-157), docs/docs/cli.mdx (lines 58-61)
-  - Test results can be uploaded to Confident AI for sharing and comparison
+  - Authenticates with Confident AI evaluation platform to access platform services and features
+  - Authentication via CLI: `deepeval login` (account registration and command-line login flows)
+  - Enables full platform capabilities:
+    - **Configuring evaluations**: Dataset management (push/pull), metric fine-tuning, annotation
+    - **Running experiments**: Benchmark comparisons, hyperparameter tracking, A/B testing
+    - **Viewing results**: Test run reports via `deepeval view`, dashboards, LLM traces
+    - **Submitting to leaderboards**: Automatic test result uploads and sharing
+  - Documentation: README.md (lines 28, 114-120, 350-376), docs/docs/cli.mdx (lines 60-65), docs/docs/getting-started.mdx
+  - Platform features span multiple workflow phases (dataset prep, execution, reporting)
 
 - ✅ **Strategy 2: API Provider Authentication** - **SUPPORTED**
   - Supports multiple LLM providers via API keys:
