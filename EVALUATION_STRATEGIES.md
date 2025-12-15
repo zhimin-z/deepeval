@@ -197,12 +197,11 @@ This document identifies which strategies from the unified evaluation workflow a
   - Documentation: docs/docs/metrics-exact-match.mdx, docs/docs/metrics-json-correctness.mdx
   - Can implement custom deterministic metrics (BLEU, ROUGE) via `BaseMetric` class
 
-- ✅ **Strategy 2: Embedding Measurement** - **SUPPORTED**
-  - Answer Relevancy metric (uses embeddings for semantic similarity)
-  - Contextual metrics use embedding-based similarity
-  - Custom embedding models supported
-  - Documentation: docs/docs/metrics-answer-relevancy.mdx, guides/guides-using-custom-embedding-models.mdx
-  - Integration with various embedding providers
+- ❌ **Strategy 2: Embedding Measurement** - **NOT SUPPORTED**
+  - DeepEval does not use embedding-based similarity calculations (BERTScore, sentence embeddings, cosine similarity)
+  - All similarity judgments are done via LLM-as-judge (subjective measurement)
+  - Metrics like Answer Relevancy use LLM prompts, not embedding comparisons
+  - No support for neural similarity models like COMET or BERTScore
 
 - ✅ **Strategy 3: Subjective Measurement** - **SUPPORTED**
   - LLM-as-judge metrics:
@@ -219,9 +218,15 @@ This document identifies which strategies from the unified evaluation workflow a
   - Documentation: docs/docs/metrics-introduction.mdx (lines 15-37), docs/docs/metrics-llm-evals.mdx
   - All metrics output score (0-1) with reasoning
 
-- ❌ **Strategy 4: Performance Measurement** - **NOT SUPPORTED**
-  - No built-in metrics for latency, throughput, memory, or energy consumption
-  - Focus is on quality evaluation, not performance benchmarking
+- ⚠️ **Strategy 4: Performance Measurement** - **PARTIALLY SUPPORTED**
+  - Step Efficiency metric evaluates resource economy (minimizing tool calls, LLM invocations, reasoning steps)
+  - Documentation: deepeval/metrics/step_efficiency/step_efficiency.py
+  - However, NO support for:
+    - Latency measurement (wall-clock time, response time)
+    - Throughput measurement (requests per second, tokens per second)
+    - Memory consumption (RAM usage, GPU memory)
+    - Energy consumption (power usage, carbon footprint)
+  - Focus remains on reasoning efficiency (quality), not runtime performance
 
 ### **Step B: Collective Aggregation**
 
@@ -302,7 +307,8 @@ This document identifies which strategies from the unified evaluation workflow a
 - 4/4 invocation strategies (Batch Inference, Interactive Loop, Arena Battle, Production Streaming)
 
 **Phase III: Assessment**
-- 3/4 individual scoring strategies (Deterministic, Embedding, Subjective)
+- 2/4 individual scoring strategies (Deterministic, Subjective only)
+- 1/4 partial support (Performance - Step Efficiency for resource economy only)
 - 1/2 aggregation strategies (Score Aggregation only)
 
 **Phase IV: Reporting**
@@ -310,10 +316,10 @@ This document identifies which strategies from the unified evaluation workflow a
 
 ### Overall Coverage:
 - **Total Strategies in Framework**: 34
-- **Fully Supported**: 23
-- **Partially Supported**: 1 (LLM-based agents)
+- **Fully Supported**: 21
+- **Partially Supported**: 3 (LLM-based agents, Step Efficiency for resource economy, Production Traffic)
 - **Not Supported**: 10
-- **Support Rate**: ~68% (23/34) or ~71% (24/34 including partial support)
+- **Support Rate**: ~62% (21/34) or ~71% (24/34 including partial support)
 
 ### Key Strengths:
 1. Comprehensive LLM evaluation metric library (50+ metrics)
@@ -328,12 +334,13 @@ This document identifies which strategies from the unified evaluation workflow a
 
 ### Key Gaps:
 1. No containerized deployment option
-2. No performance/efficiency metrics (latency, throughput, memory)
-3. No simulation environment support (3D, physics, RL)
-4. No uncertainty quantification (confidence intervals, bootstrap)
-5. Limited support for non-LLM evaluation targets (e.g., vector indexes, graph embeddings)
-6. Agent evaluation limited to LLM-based agents (not RL policies or robot controllers)
-7. No binary package distribution
+2. No embedding-based similarity metrics (BERTScore, cosine similarity, COMET)
+3. No runtime performance metrics (latency, throughput, memory usage, energy)
+4. No simulation environment support (3D, physics, RL)
+5. No uncertainty quantification (confidence intervals, bootstrap)
+6. Limited support for non-LLM evaluation targets (e.g., vector indexes, graph embeddings)
+7. Agent evaluation limited to LLM-based agents (not RL policies or robot controllers)
+8. No binary package distribution
 
 ---
 
