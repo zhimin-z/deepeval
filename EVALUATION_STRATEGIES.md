@@ -8,23 +8,26 @@ This document identifies which strategies from the unified evaluation workflow a
 
 ### **Step A: Harness Installation**
 
-- ✅ **Strategy 1: PyPI Packages** - **SUPPORTED**
+- ✅ **Strategy 1: Git Clone** - **SUPPORTED**
+  - As an open-source project, DeepEval can be cloned and installed from source
+  - Repository available at: https://github.com/confident-ai/deepeval
+  - Manual installation for bleeding-edge versions or development work
+
+- ✅ **Strategy 2: PyPI Packages** - **SUPPORTED**
   - DeepEval can be installed via `pip install -U deepeval`
   - Documentation: README.md, docs/docs/cli.mdx, docs/docs/getting-started.mdx
   - Additional dependencies can be installed via pip (e.g., `pip install chromadb langchain-core` for document synthesis)
+  - Supports requirements files and git-based installations
 
-- ✅ **Strategy 2: Git Clone** - **SUPPORTED**
-  - As an open-source project, DeepEval can be cloned and installed from source
-  - Repository available at: https://github.com/confident-ai/deepeval
-
-- ❌ **Strategy 3: Container Images** - **NOT SUPPORTED**
-  - No evidence of Docker or container image distribution found in documentation
+- ❌ **Strategy 3: Node Package** - **NOT SUPPORTED**
+  - DeepEval is Python-based only
+  - No npm, npx, or Homebrew packages available
 
 - ❌ **Strategy 4: Binary Packages** - **NOT SUPPORTED**
   - No standalone executable binaries available
 
-- ❌ **Strategy 5: Node Package** - **NOT SUPPORTED**
-  - DeepEval is Python-based only
+- ❌ **Strategy 5: Container Images** - **NOT SUPPORTED**
+  - No evidence of Docker or container image distribution found in documentation
 
 ### **Step B: Service Authentication**
 
@@ -295,7 +298,7 @@ This document identifies which strategies from the unified evaluation workflow a
 ### Supported Strategies by Phase:
 
 **Phase 0: Provisioning**
-- 2/5 installation strategies (PyPI, Git Clone)
+- 2/5 installation strategies (Git Clone, PyPI)
 - 3/3 authentication strategies (Platform, API Provider, Repository)
 
 **Phase I: Specification**
